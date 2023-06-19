@@ -5,10 +5,10 @@
       <h5>Upload and Download Files</h5>
     </div>
     <div class="card-body card-upload-file-body">
-      <div *ngIf="fileStatus.status==='progress'">
+      <div *ngIf="uploadFileStatus.status==='progress' && uploadFileStatus.requestType ==='Uploading'">
         <div class="progress">
-          <div [style.width.%]="fileStatus.percent" class="progress-bar progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-              {{ fileStatus.requestType }} {{ fileStatus.percent }} 
+          <div [style.width.%]="uploadFileStatus.percent" class="progress-bar progress-bar-animated" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+              {{ uploadFileStatus.requestType }} {{ uploadFileStatus.percent }} %
             </div>
         </div>
       </div>
@@ -16,12 +16,16 @@
       <form enctype="multipart/form-data">
         <fieldset>
           <div class="form-group">
-            <div class="drop-zone">
-              <i class="fa-solid fa-arrow-up-from-bracket"></i>
+            <div class="drop-zone" (drop)="onFileDrop($event)" (dragover)="onDragOver($event)" (dragenter)="onDragEnter($event)">
+              <div *ngIf="!loadingFiles" class="drop-zone-info">
+                <i class="fa-solid fa-arrow-up-from-bracket"></i>
               <span>Drag and drop files to upload</span>
               <label for="files" class="btn btn-primary">Select Image</label>
               <input id="files" type="file" (change)="onUploadFile($any($event.target).files)" name="files" multiple />
+              </div>
+              <i class="drop-zone-loading" *ngIf="loadingFiles" style="color: #0069D9;" class="fa-solid fa-spinner fa-spin fa-spin-reverse fa-2xl"></i>
             </div>
+            
             <div class="drop-zone-advertisment">
               <span>Soported formats: XLS, PDF</span>
               <span>Max size 400MB</span>
@@ -31,20 +35,21 @@
       </form>
       
       <div class="udf-downloaded">
-        <!-- <div *ngIf="fileNames?.length > 0" class="js-upload-finished"> -->
-        <div *ngFor="let filename of fileNames" class="list-group">
+        <div *ngFor="let metadataFile of metadataFiles" class="list-group">
           <li class="list-group-item udf-downloaded-item">
             <div class="udf-downloaded-main-content">
               <div class="udf-downloaded-content">
                 <i class="fa-regular fa-file fa-lg"></i>
-                <label>{{ filename }}</label>
-                <small class="form-text text-muted">440 KB &middot; 2 seconds </small>
-                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+                <label>{{ metadataFile.fileName }}</label>
+                <small class="form-text text-muted">{{(metadataFile.fileSize / 1024).toFixed(2)}} KB &middot; 2 seconds </small>
               </div>
-              <a class="btn btn-secondary btn-sm" (click)="onDownloadFile(filename)">Download</a>
+              <a class="btn btn-secondary btn-sm" (click)="onDownloadFile(metadataFile.fileName, metadataFile.fileSize)">
+                <span *ngIf="!downloadFileStatus[metadataFile.fileName] || downloadFileStatus[metadataFile.fileName].status !== 'progress'">Download</span>
+                <span *ngIf="downloadFileStatus[metadataFile.fileName] && downloadFileStatus[metadataFile.fileName].status === 'progress'">{{downloadFileStatus[metadataFile.fileName].percent}}%</span>
+                <!-- <i *ngIf="downloadFileStatus[metadataFile.fileName] && downloadFileStatus[metadataFile.fileName].status === 'progress'" class="drop-zone-loading" style="color: #0069D9;" class="fa-solid fa-spinner fa-spin fa-spin-reverse fa-xl"></i> -->
+              </a>
+              
             </div>
-            <!-- <div style="height: 5px; width: 100%; background-color: #3063D4 !important" class="progress-bar progress-bar-animated bg-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
-            </div> -->
           </li>
         </div>
       </div>

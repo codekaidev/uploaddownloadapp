@@ -29,22 +29,25 @@ h5 {
   margin: 0;
 }
 
+.drop-zone-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: #999;
+    gap: 13px;
+}
+
 .drop-zone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 13px;
   width: 100%;
   height: 200px;
   border: 2px dashed #ccc;
   border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  color: #999;
 }
 
 .drop-zone:hover {
@@ -52,13 +55,13 @@ h5 {
   background-color: #f2f8ff;
 }
 
-.drop-zone > input[type="file"] {
+.drop-zone-info > input[type="file"] {
   visibility: hidden;
   display: none;
   color: transparent;
 }
 
-.drop-zone > span {
+.drop-zone-info > span {
     font-size: 12px;
 }
 
